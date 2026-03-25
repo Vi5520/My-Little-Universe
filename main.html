@@ -6,232 +6,119 @@
     <title>ActionBro | 影視元宇宙</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
     <style>
-        body, html { margin: 0; padding: 0; background: #000; color: #fff; scroll-behavior: smooth; font-family: 'Oswald', sans-serif; }
+        body, html { 
+            margin: 0; padding: 0; background: #000; color: #fff; 
+            scroll-behavior: smooth; font-family: 'Oswald', sans-serif; 
+            overflow-x: hidden; width: 100%;
+        }
         
-        /* --- 抽屜式滑出選單設定 --- */
-        /* --- 抽屜式滑出選單設定 (升級：若有若無的絲綢線條) --- */
+        /* --- 側邊選單：基礎設定 --- */
         .drawer-menu {
-            position: fixed;
-            left: 0;
-            top: 0;
-            width: 10px; 
-            height: 100vh;
-            overflow: hidden; 
-            transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            backdrop-filter: blur(5px);
-            border-right: 1px solid rgba(255,255,255,0.1);
-
-            /* 👇 替換這段背景材質設定 👇 */
-            background: 
-                /* 第一層：極淡、不密集的絲線織紋 (將間距拉大到 12px) */
-                repeating-linear-gradient(
-                    160deg, /* 稍微調整角度，讓它偏向橫向 */
-                    rgba(255, 255, 255, 0.015) 0px, /* 降低透明度到 0.015 */
-                    rgba(255, 255, 255, 0.015) 1px,
-                    transparent 1px,
-                    transparent 12px /* 拉大重複間距 */
-                ),
-                /* 第二層：絲綢的寬幅反光澤 (維持原本的流動感) */
-                linear-gradient(
-                    120deg, 
-                    rgba(15, 15, 15, 0.98) 0%, 
-                    rgba(45, 45, 45, 0.85) 25%, 
-                    rgba(10, 10, 10, 0.95) 50%, 
-                    rgba(50, 50, 50, 0.8) 75%, 
-                    rgba(5, 5, 5, 0.98) 100%
-                );
+            position: fixed; left: 0; top: 0; width: 0px; height: 100vh;
+            overflow: hidden; transition: width 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            z-index: 1000; display: flex; flex-direction: column; justify-content: center;
+            backdrop-filter: blur(10px); border-right: 1px solid rgba(255,255,255,0.1);
+            background: repeating-linear-gradient(160deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 1px, transparent 1px, transparent 12px),
+                        linear-gradient(120deg, rgba(15, 15, 15, 0.98) 0%, rgba(45, 45, 45, 0.85) 25%, rgba(10, 10, 10, 0.95) 50%, rgba(50, 50, 50, 0.8) 75%, rgba(5, 5, 5, 0.98) 100%);
             background-size: auto, 200% 200%;
             animation: silkShimmer 6s ease-in-out infinite alternate;
-            box-shadow: inset -5px 0 20px rgba(0,0,0,0.8);
         }
 
-        /* 滑鼠移過去時展開寬度 */
-        .drawer-menu:hover {
-            width: 280px;
+        /* 電腦版懸浮展開 */
+        @media (min-width: 769px) {
+            .drawer-menu { width: 10px; }
+            .drawer-menu:hover { width: 280px; }
+            .drawer-menu:hover a { transform: translateX(0); opacity: 1; }
         }
 
-        .menu-hint {
-            position: absolute;
-            right: 2px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 2px;
-            height: 60px;
-            background: rgba(255, 255, 255, 0.3);
-            transition: 0.3s;
-        }
-        
-        .drawer-menu:hover .menu-hint {
-            opacity: 0;
-        }
+        /* 選單開啟狀態 */
+        .drawer-menu.active { width: 280px; }
+        .drawer-menu.active a { transform: translateX(0); opacity: 1; }
 
         .drawer-menu a {
-            color: #eeeeee;
-            text-decoration: none;
-            font-family: 'Noto Serif TC', serif;
-            font-size: 1.8rem;
-            letter-spacing: 3px;
-            margin: 25px auto;
-            transition: all 0.4s ease;
-            transform: translateX(-20px);
-            opacity: 0; 
-            text-align: center;
-            width: fit-content;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            color: #eeeeee; text-decoration: none; font-family: 'Noto Serif TC', serif;
+            font-size: 1.8rem; letter-spacing: 3px; margin: 25px auto;
+            transition: all 0.4s ease; transform: translateX(-20px); opacity: 0; 
+            text-align: center; width: 100%; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            display: block;
         }
 
-        .drawer-menu:hover a {
-            transform: translateX(0);
-            opacity: 1;
+        .drawer-menu a:hover { color: #ffffff; text-shadow: 0 0 15px rgba(255, 255, 255, 0.8); }
+
+        /* 手機版漢堡按鈕 */
+        .menu-toggle {
+            position: fixed; top: 20px; left: 20px; z-index: 1100;
+            width: 40px; height: 40px; display: none; flex-direction: column;
+            justify-content: space-around; cursor: pointer; background: rgba(0,0,0,0.5);
+            padding: 5px; border-radius: 5px; border: 1px solid rgba(255,255,255,0.2);
         }
-        .drawer-menu:hover a:nth-child(2) { transition-delay: 0.1s; }
-        .drawer-menu:hover a:nth-child(3) { transition-delay: 0.2s; }
-        .drawer-menu:hover a:nth-child(4) { transition-delay: 0.3s; }
+        .menu-toggle span { width: 100%; height: 2px; background: #fff; transition: 0.3s; }
 
-        .drawer-menu a:hover {
-    color: #ffffff; /* 變全白 */
-    /* 加強發光感 */
-    text-shadow: 0 0 15px rgba(255, 255, 255, 0.8), 0 0 5px rgba(255, 255, 255, 0.5);
-    transform: scale(1.05);
-}
-
-        .sub-text {
-            font-family: 'Microsoft JhengHei', sans-serif;
-            font-size: 0.9rem;
-            letter-spacing: 1px;
-            color: #888;
-        }
-
+        /* --- 內容區塊 --- */
         section {
-            height: 100vh; display: flex; flex-direction: column;
+            min-height: 100vh; display: flex; flex-direction: column;
             justify-content: center; align-items: center;
-            position: relative; overflow: hidden;
-            border-bottom: 1px solid #222;
+            position: relative; overflow: hidden; padding: 40px 20px;
+            box-sizing: border-box;
         }
 
         #hero {
-            background: linear-gradient(rgba(0,0,0,0.5), #000), 
+            background: linear-gradient(rgba(0,0,0,0.6), #000), 
                         url('https://images.unsplash.com/photo-1492691523569-fc010075d362?auto=format&fit=crop&q=80&w=2070');
             background-size: cover; background-position: center;
         }
-        .logo { font-family: 'Noto Serif TC', serif; font-size: 5rem; letter-spacing: 15px; margin: 0; text-shadow: 0 0 30px #000; }
 
-        #library { background: #050505; }
-        .grid { display: flex; gap: 30px; }
+        .logo { font-family: 'Noto Serif TC', serif; font-size: 5rem; letter-spacing: 15px; margin: 20px 0; text-align: center; }
+
+        .grid { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1200px; }
         .item { 
-            width: 250px; height: 350px; background: #111; border: 1px solid #333;
+            width: 280px; height: 380px; background: #111; border: 1px solid #333;
             display: flex; flex-direction: column; justify-content: flex-end; padding: 20px;
-            transition: 0.5s; cursor: pointer;
+            transition: 0.5s; cursor: pointer; box-sizing: border-box;
         }
-        .item:hover { transform: scale(1.05); border-color: #fff; background: #222; }
+        .item:hover { transform: scale(1.02); border-color: #fff; }
 
-        #services { background: #000; }
-        .service-title { font-size: 3rem; color: #aaa; margin-bottom: 20px; }
+        /* --- 強力手機版 RWD --- */
+        @media (max-width: 768px) {
+            .menu-toggle { display: flex; }
+            .logo { font-size: 2.5rem !important; letter-spacing: 5px !important; }
+            .typing-effect { font-size: 1rem !important; letter-spacing: 2px !important; }
+            
+            #library h2 { font-size: 2rem !important; }
+            .grid { flex-direction: column; align-items: center; }
+            .item { width: 90% !important; height: 250px !important; }
+            
+            .service-title { font-size: 1.8rem !important; text-align: center; }
+            #services p { width: 100% !important; font-size: 0.95rem; }
+
+            .drawer-menu.active { width: 80vw; }
+        }
+
+        .sub-text { font-family: 'Microsoft JhengHei', sans-serif; font-size: 0.9rem; color: #888; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: 1s; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        @keyframes silkShimmer { 0% { background-position: 0% 0%, 0% 50%; } 100% { background-position: 0% 0%, 100% 50%; } }
         
-        .enter-link {
-            margin-top: 50px; padding: 15px 40px; border: 1px solid #fff;
-            text-decoration: none; color: #fff; transition: 0.3s;
-        }
-        .enter-link:hover { background: #fff; color: #000; }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(50px);
-            transition: all 1s ease-out;
-        }
-
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .typing-container {
-            width: fit-content;
-            margin: 0 auto;
-        }
-
         .typing-effect {
-            font-size: 1.2rem;
-            letter-spacing: 5px;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            border-right: 3px solid #fff;
-            display: inline-block;
-            animation: 
-                typing 2.5s steps(30, end), 
-                blink-caret 0.75s step-end infinite;
+            font-size: 1.2rem; letter-spacing: 5px; color: #fff;
+            white-space: nowrap; overflow: hidden;
+            border-right: 3px solid #fff; display: inline-block;
+            animation: typing 2.5s steps(30, end), blink-caret 0.75s step-end infinite;
         }
-
-        @keyframes typing {
-            from { width: 0; }
-            to { width: 100%; }
-        }
-
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: #fff; }
-        }
-
-        @keyframes silkShimmer {
-            0% { background-position: 0% 0%, 0% 50%; }
-            100% { background-position: 0% 0%, 100% 50%; }
-        }
-        /* --- 手機版 RWD 優化 --- */
-@media (max-width: 768px) {
-    /* 1. 縮小首頁大標題，避免手機上字體過大 */
-    .hero-title {
-        font-size: 2.8rem !important;
-        letter-spacing: 5px !important;
-    }
-
-    /* 2. 讓側邊選單更適合手指點擊 */
-    .drawer-menu {
-        width: 85% !important; /* 選單佔螢幕 85% */
-        padding-top: 80px;
-    }
-
-    .drawer-menu a {
-        font-size: 1.5rem !important;
-        margin: 20px auto;
-    }
-
-    /* 3. 調整區塊文字大小與寬度 */
-    section h2 {
-        font-size: 1.8rem !important;
-    }
-    
-    section p {
-        font-size: 0.9rem !important;
-        width: 90% !important;
-        margin: 0 auto;
-    }
-
-    /* 4. 讓卡片在手機上垂直排列 */
-    .grid {
-        display: flex !important;
-        flex-direction: column !important;
-        align-items: center !important;
-    }
-
-    .item {
-        width: 90% !important;
-        margin-bottom: 20px !important;
-    }
-}
+        @keyframes typing { from { width: 0; } to { width: 100%; } }
+        @keyframes blink-caret { from, to { border-color: transparent; } 50% { border-color: #fff; } }
     </style>
 </head>
 <body>
 
-    <div class="drawer-menu">
-        <div class="menu-hint"></div> 
-        <a href="#hero">HOME<br><span class="sub-text">首頁</span></a>
-        <a href="#library">LIBRARY<br><span class="sub-text">剪輯圖書室</span></a>
-        <a href="#services">SERVICES<br><span class="sub-text">客製化服務</span></a>
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+    </div>
+
+    <div class="drawer-menu" id="drawerMenu">
+        <a href="#hero" onclick="toggleMenu()">HOME<br><span class="sub-text">首頁</span></a>
+        <a href="#library" onclick="toggleMenu()">LIBRARY<br><span class="sub-text">剪輯圖書室</span></a>
+        <a href="#services" onclick="toggleMenu()">SERVICES<br><span class="sub-text">客製化服務</span></a>
     </div>
 
     <section id="hero">
@@ -270,19 +157,24 @@
     </section>
 
     <script>
+    // 選單開關功能
+    function toggleMenu() {
+        const menu = document.getElementById('drawerMenu');
+        // 只有在手機版寬度時才需要手動切換 class
+        if (window.innerWidth <= 768) {
+            menu.classList.toggle('active');
+        }
+    }
+
     function reveal() {
         var reveals = document.querySelectorAll(".reveal");
         for (var i = 0; i < reveals.length; i++) {
             var windowHeight = window.innerHeight;
             var elementTop = reveals[i].getBoundingClientRect().top;
-            var elementBottom = reveals[i].getBoundingClientRect().bottom;
-            var elementVisible = 150; 
-
+            var elementVisible = 100; 
             if (elementTop < windowHeight - elementVisible) {
                 reveals[i].classList.add("active");
-            } 
-            
-            if (elementBottom < 0 || elementTop > windowHeight) {
+            } else {
                 reveals[i].classList.remove("active");
             }
         }
