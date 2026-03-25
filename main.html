@@ -181,6 +181,48 @@
             0% { background-position: 0% 0%, 0% 50%; }
             100% { background-position: 0% 0%, 100% 50%; }
         }
+        /* --- 手機版 RWD 優化 --- */
+@media (max-width: 768px) {
+    /* 1. 縮小首頁大標題，避免手機上字體過大 */
+    .hero-title {
+        font-size: 2.8rem !important;
+        letter-spacing: 5px !important;
+    }
+
+    /* 2. 讓側邊選單更適合手指點擊 */
+    .drawer-menu {
+        width: 85% !important; /* 選單佔螢幕 85% */
+        padding-top: 80px;
+    }
+
+    .drawer-menu a {
+        font-size: 1.5rem !important;
+        margin: 20px auto;
+    }
+
+    /* 3. 調整區塊文字大小與寬度 */
+    section h2 {
+        font-size: 1.8rem !important;
+    }
+    
+    section p {
+        font-size: 0.9rem !important;
+        width: 90% !important;
+        margin: 0 auto;
+    }
+
+    /* 4. 讓卡片在手機上垂直排列 */
+    .grid {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    .item {
+        width: 90% !important;
+        margin-bottom: 20px !important;
+    }
+}
     </style>
 </head>
 <body>
