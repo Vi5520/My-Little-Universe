@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
     <style>
         /* ============================================
-           1. 核心樣式 & 星空背景
+           1. 核心樣式 (ActionBro 影視風格)
            ============================================ */
         body, html { 
             margin: 0; padding: 0; background: #000; color: #fff; 
@@ -15,21 +15,8 @@
             overflow-x: hidden; width: 100%;
         }
 
-        /* 將星空設定為固定背景，不隨畫面捲動而消失 */
-        .star-layer {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: transparent; z-index: -1; pointer-events: none;
-        }
-        #stars-small { width: 1px; height: 1px; animation: twinkle-fast 4s ease-in-out infinite; }
-        #stars-med { width: 2px; height: 2px; border-radius: 50%; animation: twinkle-med 7s ease-in-out infinite 1s; }
-        #stars-large { width: 3px; height: 3px; border-radius: 50%; animation: twinkle-slow 10s ease-in-out infinite 2s; }
-
-        @keyframes twinkle-fast { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.8; } }
-        @keyframes twinkle-med { 0%, 100% { opacity: 0.1; } 50% { opacity: 1; } }
-        @keyframes twinkle-slow { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.9; } }
-
         /* ============================================
-           2. 絲綢質感側邊選單
+           2. 絲綢質感側邊選單 (含電腦版設定)
            ============================================ */
         .drawer-menu {
             position: fixed; left: 0; top: 0; width: 0px; height: 100vh;
@@ -41,27 +28,29 @@
             box-shadow: inset -5px 0 20px rgba(0,0,0,0.8);
         }
 
-        /* ✅ 電腦版設定：點開或滑過去都只有 300px */
+        /* ✅ 電腦版展開設定 (大於 769px 時) */
         @media (min-width: 769px) {
             .drawer-menu { width: 10px; }
-            .drawer-menu:hover, .drawer-menu.active { width: 300px !important; }
+            /* 🔥 要求4：左側選單點選同步鼠標游移過去的版面框架大小 (統一為 300px) */
+            .drawer-menu:hover, .drawer-menu.active { width: 300px !important; } 
             .drawer-menu:hover a, .drawer-menu.active a { transform: translateX(0); opacity: 1; }
         }
 
         .drawer-menu a {
             color: #eee; text-decoration: none; font-family: 'Noto Serif TC', serif;
             font-size: 1.8rem; letter-spacing: 3px; margin: 25px auto;
-            transition: all 0.4s; transform: translateX(-30px); opacity: 0; text-align: center; display: block;
+            transition: 0.4s; transform: translateX(-30px); opacity: 0; text-align: center; display: block;
         }
-        
-        /* 🔥 選單懸停動畫 */
+
+        /* 🔥 左側選單文字懸停動畫 */
         .drawer-menu a:hover {
             color: #007bff; 
             transform: scale(1.1) !important; 
             text-shadow: 0 0 15px rgba(0, 123, 255, 0.6);
         }
 
-        .sub-text { font-family: 'Microsoft JhengHei', sans-serif; font-size: 0.85rem; color: #888; display: block; margin-top: 5px;}
+        .sub-text { font-family: 'Microsoft JhengHei', sans-serif; font-size: 0.85rem; color: #888; display: block; margin-top: 5px; transition: 0.4s;}
+        .drawer-menu a:hover .sub-text { color: #ccc; }
 
         /* 漢堡按鈕 */
         .menu-btn {
@@ -74,10 +63,9 @@
         /* ============================================
            3. 內容區塊與卡片
            ============================================ */
-        section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 60px 20px; box-sizing: border-box; position: relative; }
+        section { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 60px 20px; box-sizing: border-box; }
         
-        /* 移除舊版圖片，改為透明讓星空透出來 */
-        #hero { background: transparent; }
+        #hero { background: linear-gradient(rgba(0,0,0,0.6), #000), url('https://images.unsplash.com/photo-1492691523569-fc010075d362?q=80&w=2070') center/cover; }
         .logo { font-family: 'Noto Serif TC', serif; font-size: 5rem; letter-spacing: 15px; margin: 20px 0; text-align: center; }
         
         .typing-effect { font-size: 1.2rem; letter-spacing: 5px; color: #fff; border-right: 3px solid #fff; white-space: nowrap; overflow: hidden; animation: typing 2.5s steps(30, end), blink-caret 0.75s step-end infinite; }
@@ -85,7 +73,7 @@
         @keyframes typing { from { width: 0; } to { width: 100%; } }
         @keyframes blink-caret { from, to { border-color: transparent; } 50% { border-color: #fff; } }
 
-        .grid { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; z-index: 10; }
+        .grid { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; }
         .item { 
             position: relative; width: 280px; height: 400px; background: #111; 
             border: 1px solid rgba(255,255,255,0.1); overflow: hidden;
@@ -93,45 +81,41 @@
             transition: all 0.5s cubic-bezier(0.165, 0.84, 0.44, 1); cursor: pointer; box-sizing: border-box;
         }
 
-        /* 🔥 卡片懸停動畫 */
+        /* 🔥 要求3：增加鼠標滑過去選項會浮起來 */
         .item:hover {
             transform: translateY(-15px);
             border-color: #007bff;
             box-shadow: 0 15px 40px rgba(0, 123, 255, 0.4);
         }
 
-        /* ✅ 保證能顯示的穩定圖片連結 */
+        /* ⚠️ 絕對不更動這區塊的圖片設定 */
         .item-pr { background: url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=600') center/cover; }
-        .item-davinci { background: url('https://images.unsplash.com/photo-1535016120720-40c646bebbbb?q=80&w=600') center/cover; }
-        .item-capcut { background: url('https://images.unsplash.com/photo-1611162616305-c69b3fa7fbe0?q=80&w=600') center/cover; }
+        .item-davinci { background: url('https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?auto=format&fit=crop&w=600&q=80') center/cover; }
+        .item-capcut { background: url('capcut.jpg') center/cover; } /* 你自己準備的 capcut.jpg */
         
-        .item::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 1; transition: 0.5s; }
+        .item::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 1; transition: 0.5s;}
         .item:hover::before { background: linear-gradient(to bottom, transparent 30%, rgba(0, 50, 150, 0.9) 100%); }
         
         .item h3, .item p { position: relative; z-index: 2; margin: 5px 0; transition: 0.3s; }
         .item:hover h3 { color: #fff; letter-spacing: 2px; }
 
-        .reveal { opacity: 0; transform: translateY(40px); transition: 1s cubic-bezier(0.19, 1, 0.22, 1); }
+        .reveal { opacity: 0; transform: translateY(30px); transition: 1s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* ============================================
-           4. 手機版 RWD 微調
+           4. ✅ 手機版 RWD 微調 (小於 768px 時)
            ============================================ */
         @media (max-width: 768px) {
             .logo { font-size: 2.5rem !important; letter-spacing: 5px !important; }
             .item { width: 95% !important; height: 220px !important; }
             
-            /* 手機版：點開時才佔滿 80% 寬度 */
+            /* 手機版側邊選單：點開時佔滿 80% 寬度 */
             .drawer-menu.active { width: 80vw !important; }
             .drawer-menu.active a { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
-
-    <div id="stars-small" class="star-layer"></div>
-    <div id="stars-med" class="star-layer"></div>
-    <div id="stars-large" class="star-layer"></div>
 
     <div class="menu-btn" onclick="toggleMenu()">
         <div></div><div></div><div></div>
@@ -182,32 +166,13 @@
     function toggleMenu() { document.getElementById('drawer').classList.toggle('active'); }
     function closeMenu() { document.getElementById('drawer').classList.remove('active'); }
 
-    // 🔥 星空生成邏輯 (確保星空能繪製出來)
-    function renderStarLayer(id, count, size) {
-        const container = document.getElementById(id);
-        let shadows = "";
-        for (let i = 0; i < count; i++) {
-            const x = Math.floor(Math.random() * window.innerWidth * 1.5);
-            const y = Math.floor(Math.random() * window.innerHeight * 1.5);
-            shadows += `${x}px ${y}px #FFF, `;
-        }
-        container.style.boxShadow = shadows.slice(0, -2);
-    }
-
-    // 頁面載入時畫出星星
-    window.onload = function() {
-        renderStarLayer('stars-small', 500); 
-        renderStarLayer('stars-med', 150);   
-        renderStarLayer('stars-large', 30);  
-    };
-
-    // 🔥 無限次觸發捲動動畫
+    // 🔥 要求2：增加滑動頁面都會重跑一次選項動態
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('active'); // 進入畫面：加上動畫
+                entry.target.classList.add('active'); // 進入畫面，加上動畫
             } else {
-                entry.target.classList.remove('active'); // 離開畫面：移除動畫，下次再進來會重跑
+                entry.target.classList.remove('active'); // 離開畫面，移除動畫狀態
             }
         });
     }, { threshold: 0.1 });
