@@ -3,154 +3,182 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ActionBro | 影視元宇宙入口</title>
+    <title>進入影視元宇宙 | ActionBro</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
     <style>
         /* ============================================
-           1. 基礎重置與背景
+           1. 基礎樣式 & 深邃星空背景
            ============================================ */
         body, html { 
             margin: 0; padding: 0; background: #000; color: #fff; 
+            scroll-behavior: smooth; font-family: 'Oswald', sans-serif; 
             overflow: hidden; width: 100%; height: 100%;
-            font-family: 'Oswald', sans-serif;
         }
-
+        
         #entry-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; transition: opacity 1.2s ease, visibility 1.2s;
+            z-index: 9999;
+            transition: opacity 1.2s ease, visibility 1.2s;
+            overflow: hidden;
+            background: radial-gradient(circle at center, #0a1128 0%, #000 100%);
         }
 
-        /* 影院級背景影片 */
-        .bg-video {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: -2; opacity: 0.7;
+        #stars, #stars2 {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: transparent; z-index: 1;
         }
 
-        /* 暗角遮罩：增加電影氛圍感，讓中心發光 */
-        #entry-overlay::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle, transparent 40%, rgba(0,0,0,0.8) 100%);
-            z-index: -1; pointer-events: none;
+        #stars { width: 1px; height: 1px; animation: starBlink 50s linear infinite; }
+        #stars2 { width: 2px; height: 2px; border-radius: 50%; animation: starBlink 100s linear infinite; }
+
+        @keyframes starBlink { from { opacity: 1; } to { opacity: 0.5; } }
+
+        /* --- 動態流星 --- */
+        .shooting-star {
+            position: absolute; left: 50%; top: 50%;
+            height: 2px; background: linear-gradient(-45deg, #fff, rgba(0, 0, 255, 0));
+            border-radius: 999px; filter: drop-shadow(0 0 6px #fff);
+            animation: tail 3s ease-in-out infinite, shooting 3s ease-in-out infinite;
+            z-index: 2; opacity: 0;
+        }
+
+        .shooting-star:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+        .shooting-star:nth-child(2) { top: 30%; left: 70%; animation-delay: 1.5s; }
+        .shooting-star:nth-child(3) { top: 50%; left: 20%; animation-delay: 3s; }
+        .shooting-star:nth-child(4) { top: 70%; left: 80%; animation-delay: 4s; }
+
+        @keyframes tail { 0% { width: 0; } 30% { width: 100px; } 100% { width: 0; } }
+        @keyframes shooting {
+            0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 1; }
+            100% { transform: translateX(400px) translateY(400px) rotate(-45deg); opacity: 0; }
         }
 
         /* ============================================
-           2. LOGO 定位與特效 (中上部)
+           2. LOGO 傳送門 (中上部)
            ============================================ */
-        .logo-wrapper {
-            position: absolute;
-            top: 15%; /* 定位在畫面上方 15% 處 */
+        .logo-container {
+            position: absolute; top: 15%; left: 50%;
+            transform: translateX(-50%);
             display: flex; flex-direction: column; align-items: center;
+            z-index: 10;
         }
 
-        .logo-portal {
-            width: 180px; height: 180px; border-radius: 50%;
-            border: 2px solid rgba(0, 123, 255, 0.8);
-            background: rgba(0, 0, 0, 0.6);
-            box-shadow: 0 0 40px rgba(0, 123, 255, 0.6), inset 0 0 20px rgba(0, 123, 255, 0.4);
+        .logo-circle {
+            width: 170px; height: 170px; border-radius: 50%;
+            border: 3px solid #007bff;
+            box-shadow: 0 0 40px rgba(0, 123, 255, 0.7), inset 0 0 20px rgba(0, 123, 255, 0.4);
             display: flex; justify-content: center; align-items: center;
-            overflow: hidden; animation: portalFloat 4s ease-in-out infinite;
+            background: #000;
+            overflow: hidden;
+            animation: logoFloat 4s ease-in-out infinite;
         }
 
-        .logo-portal img {
-            width: 100%; height: 100%; object-fit: contain;
-            /* 🔥 關鍵：濾掉圖片黑底 */
-            mix-blend-mode: screen; 
-            filter: drop-shadow(0 0 10px rgba(0, 123, 255, 0.8));
+        .logo-circle img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(1.1) contrast(1.1);
         }
 
-        @keyframes portalFloat {
+        @keyframes logoFloat {
             0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-10px) scale(1.02); }
+            50% { transform: translateY(-15px) scale(1.03); }
         }
 
         /* ============================================
-           3. 進入按鈕 (紅框位置 - 底部)
+           3. 進入按鈕 (底部紅框位置)
            ============================================ */
         .entry-btn {
             position: absolute;
-            bottom: 10%; /* 定位到畫面紅框底部 */
-            padding: 16px 60px;
-            background: rgba(10, 10, 20, 0.6);
+            bottom: 10%; 
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            padding: 16px 65px; 
+            
+            font-family: 'Noto Serif TC', serif; 
+            font-weight: 700;
+            font-size: 1.5rem; 
+            color: #fff;
+            letter-spacing: 15px; 
+            text-indent: 15px;    
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.6); 
+            
+            background: rgba(0, 0, 0, 0.6);
             border: 2px solid #007bff;
             border-radius: 50px;
-            color: #fff;
-            font-family: 'Noto Serif TC', serif;
-            font-size: 1.4rem;
-            letter-spacing: 12px; /* 增加字距，更有電影感 */
-            text-indent: 12px; /* 修正字距造成的偏心 */
             cursor: pointer;
-            box-shadow: 0 0 25px rgba(0, 123, 255, 0.4);
-            transition: 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            box-shadow: 0 0 30px rgba(0, 123, 255, 0.5);
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
             backdrop-filter: blur(10px);
             white-space: nowrap;
         }
 
         .entry-btn:hover {
             background: #007bff;
-            box-shadow: 0 0 50px rgba(0, 123, 255, 0.8);
-            transform: scale(1.05); letter-spacing: 15px;
+            box-shadow: 0 0 60px rgba(0, 123, 255, 1);
+            color: #fff;
+            letter-spacing: 20px; 
+            text-indent: 20px;
+            transform: translateX(-50%) scale(1.08); 
         }
 
-        #entry-overlay.fade-out { opacity: 0; visibility: hidden; }
+        #entry-overlay.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
         /* ============================================
-           4. 後續內容 (隱藏在遮罩後)
+           4. 手機版 RWD 適配
            ============================================ */
-        main {
-            width: 100%; height: 100vh; background: #000;
-            display: flex; justify-content: center; align-items: center;
-            text-align: center;
-        }
-        .reveal-logo { font-size: 4rem; letter-spacing: 10px; opacity: 0; transform: translateY(20px); transition: 1s; }
-        .reveal-logo.active { opacity: 1; transform: translateY(0); }
-
-        /* 手機版適配 */
         @media (max-width: 768px) {
             .logo-portal { width: 140px; height: 140px; }
-            .entry-btn { font-size: 1.1rem; padding: 12px 40px; letter-spacing: 6px; bottom: 12%; }
+            .entry-btn { font-size: 0.8rem; padding: 7px 20px; letter-spacing: 4px; text-indent: 4px; bottom: 12%; }
         }
     </style>
 </head>
 <body>
 
     <div id="entry-overlay">
-        <video autoplay muted loop playsinline class="bg-video">
-            <source src="bg.mp4" type="video/mp4">
-        </video>
+        <div id="stars"></div>
+        <div id="stars2"></div>
         
-        <div class="logo-wrapper">
-            <div class="logo-portal">
-                <img src="my-photo.png" alt="ActionBro Logo">
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+        <div class="shooting-star"></div>
+
+        <div class="logo-container">
+            <div class="logo-circle">
+                <img src="my-photo.jpg" alt="ActionBro Photo">
             </div>
         </div>
         
-        <button class="entry-btn" onclick="startExperience()">進入影視元宇宙</button>
+        <button class="entry-btn" onclick="startExperience()">进入影视元宇宙</button>
     </div>
 
-    <main id="main-content">
-        <h1 id="inner-logo" class="reveal-logo">影視元宇宙</h1>
-    </main>
-
     <script>
+        // 🔥 修改這裡：加入跳轉頁面的邏輯
         function startExperience() {
-            // 1. 遮罩淡出
-            const overlay = document.getElementById('entry-overlay');
-            overlay.classList.add('fade-out');
+            // 1. 先讓遮罩執行淡出動畫
+            document.getElementById('entry-overlay').classList.add('fade-out');
             
-            // 2. 觸發內部內容動畫
+            // 2. 設定計時器，等待動畫執行 1.2 秒後，跳轉到你的主頁面
             setTimeout(() => {
-                document.getElementById('inner-logo').classList.add('active');
-            }, 800);
+                // 👇 請將 'main.html' 換成你真正的主頁檔案名稱或網址 👇
+                window.location.href = 'main.html'; 
+            }, 1200);
         }
 
-        // 確保按鈕在點擊時有觸感回饋
-        document.querySelector('.entry-btn').addEventListener('touchstart', function(){
-            this.style.transform = 'scale(0.95)';
-        });
-        document.querySelector('.entry-btn').addEventListener('touchend', function(){
-            this.style.transform = 'scale(1)';
-        });
+        // 星星生成邏輯 (保持不變)
+        function createStars(id, count) {
+            const starContainer = document.getElementById(id);
+            let shadows = "";
+            for (let i = 0; i < count; i++) {
+                shadows += `${Math.random() * 2000}px ${Math.random() * 2000}px #FFF, `;
+            }
+            starContainer.style.boxShadow = shadows.slice(0, -2);
+        }
+
+        window.onload = function() {
+            createStars('stars', 700);
+            createStars('stars2', 200);
+        };
     </script>
 </body>
 </html>

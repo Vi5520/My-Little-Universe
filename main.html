@@ -7,57 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
     <style>
         /* ============================================
-           1. 入口遮罩 (Splash Screen) & UI 設計
-           ============================================ */
-        #entry-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at center, #0a0a1a 0%, #000 100%);
-            z-index: 9999; display: flex; justify-content: center; align-items: center;
-            transition: opacity 1.2s ease, visibility 1.2s;
-            overflow: hidden;
-        }
-
-        /* 背景影片設定 (已開啟) */
-        .bg-video {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            object-fit: cover; z-index: -1; opacity: 0.5;
-        }
-
-        .entry-content {
-            display: flex; flex-direction: column; align-items: center; gap: 35px;
-            text-align: center; z-index: 10;
-        }
-
-        /* 大頭照：圓形、發光、漂浮感 */
-        .profile-img {
-            width: 160px; height: 160px; border-radius: 50%;
-            object-fit: cover; border: 3px solid #007bff;
-            box-shadow: 0 0 30px rgba(0, 123, 255, 0.6);
-            animation: imgFloat 4s ease-in-out infinite;
-        }
-
-        @keyframes imgFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(2deg); }
-        }
-
-        .entry-btn {
-            padding: 18px 50px; font-family: 'Noto Serif TC', serif; font-size: 1.3rem;
-            color: #fff; background: rgba(0,0,0,0.5); border: 2px solid #007bff;
-            border-radius: 50px; cursor: pointer; letter-spacing: 8px;
-            box-shadow: 0 0 20px rgba(0, 123, 255, 0.4); transition: 0.4s;
-            text-transform: uppercase;
-        }
-
-        .entry-btn:hover {
-            transform: scale(1.1); background: #007bff;
-            box-shadow: 0 0 40px rgba(0, 123, 255, 0.9);
-        }
-
-        #entry-overlay.fade-out { opacity: 0; visibility: hidden; }
-
-        /* ============================================
-           2. 核心樣式 (ActionBro 影視風格)
+           1. 核心樣式 (ActionBro 影視風格)
            ============================================ */
         body, html { 
             margin: 0; padding: 0; background: #000; color: #fff; 
@@ -65,7 +15,9 @@
             overflow-x: hidden; width: 100%;
         }
 
-        /* 絲綢質感側邊選單 */
+        /* ============================================
+           2. 絲綢質感側邊選單 (含電腦版設定)
+           ============================================ */
         .drawer-menu {
             position: fixed; left: 0; top: 0; width: 0px; height: 100vh;
             overflow: hidden; transition: width 0.6s cubic-bezier(0.19, 1, 0.22, 1);
@@ -76,14 +28,12 @@
             box-shadow: inset -5px 0 20px rgba(0,0,0,0.8);
         }
 
+        /* ✅ 電腦版展開設定 (大於 769px 時) */
         @media (min-width: 769px) {
             .drawer-menu { width: 10px; }
-            .drawer-menu:hover, .drawer-menu.active { width: 300px; }
+            .drawer-menu:hover, .drawer-menu.active { width: 300px; } /* 固定寬度，不再是 80vw */
             .drawer-menu:hover a, .drawer-menu.active a { transform: translateX(0); opacity: 1; }
         }
-
-        .drawer-menu.active { width: 80vw !important; }
-        .drawer-menu.active a { transform: translateX(0); opacity: 1; }
 
         .drawer-menu a {
             color: #eee; text-decoration: none; font-family: 'Noto Serif TC', serif;
@@ -120,9 +70,11 @@
             display: flex; flex-direction: column; justify-content: flex-end; padding: 30px 20px;
             transition: 0.5s; cursor: pointer; box-sizing: border-box;
         }
+
+        /* 卡片圖片設定 */
         .item-pr { background: url('https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?q=80&w=600') center/cover; }
-        .item-davinci { background: url('https://images.unsplash.com/photo-1535016120720-40c646bebbbb?q=80&w=600') center/cover; }
-        .item-capcut { background: url('https://images.unsplash.com/photo-1536240478700-b869070f9279?q=80&w=600') center/cover; }
+        .item-davinci { background: url('https://images.unsplash.com/photo-1601506521937-0121a7fc2a6b?auto=format&fit=crop&w=600&q=80') center/cover; }
+        .item-capcut { background: url('capcut.jpg') center/cover; } /* 你自己準備的 capcut.jpg */
         
         .item::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.9) 100%); z-index: 1; }
         .item h3, .item p { position: relative; z-index: 2; margin: 5px 0; }
@@ -130,27 +82,20 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: 1s ease-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* RWD 微調 */
+        /* ============================================
+           4. ✅ 手機版 RWD 微調 (小於 768px 時)
+           ============================================ */
         @media (max-width: 768px) {
             .logo { font-size: 2.5rem !important; letter-spacing: 5px !important; }
             .item { width: 95% !important; height: 220px !important; }
-            .profile-img { width: 130px; height: 130px; }
-            .entry-btn { font-size: 1rem; padding: 15px 35px; letter-spacing: 5px; }
+            
+            /* 手機版側邊選單：點開時佔滿 80% 寬度 */
+            .drawer-menu.active { width: 80vw !important; }
+            .drawer-menu.active a { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
 <body>
-
-    <div id="entry-overlay">
-        <video autoplay muted loop playsinline class="bg-video">
-            <source src="bg.mp4" type="video/mp4">
-        </video>
-        
-        <div class="entry-content">
-            <img src="my-photo.jpg" alt="ActionBro" class="profile-img">
-            <button class="entry-btn" onclick="startExperience()">進入影視元宇宙</button>
-        </div>
-    </div>
 
     <div class="menu-btn" onclick="toggleMenu()">
         <div></div><div></div><div></div>
@@ -171,7 +116,7 @@
     </section>
 
     <section id="library">
-        <h2 class="reveal" style="font-size: 3rem; margin-bottom: 50px;">剪輯圖書館</h2>
+        <h2 class="reveal" style="font-size: 3rem; margin-bottom: 50px;">剪輯圖書室</h2>
         <div class="grid reveal">
             <div class="item item-pr" onclick="location.href='library.html'">
                 <h3>PR 專業教學</h3>
@@ -197,11 +142,6 @@
     </section>
 
     <script>
-    // 進入功能
-    function startExperience() {
-        document.getElementById('entry-overlay').classList.add('fade-out');
-    }
-
     // 選單開關
     function toggleMenu() { document.getElementById('drawer').classList.toggle('active'); }
     function closeMenu() { document.getElementById('drawer').classList.remove('active'); }
